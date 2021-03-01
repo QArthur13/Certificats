@@ -1,0 +1,26 @@
+{% include "base.html.twig" %}
+
+<table class="table table-bordered">
+    <thead class="thead-primary text-white">
+        <tr>
+            <th>ID</th>
+            <th>Société</th>
+            <th>Domaine</th>
+            <th>Société Fournisseur</th>
+            <th>Domaine Fournisseur</th>
+            <th>Date de Validation</th>
+            <th>Date d'Expiration </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for list in lists %}
+            <th class="thead-primary text-white">{{ID}}</th>
+            <td>{{Societe}}</td>
+            <td>{{Domaine}}</td>
+            <td>{{SocieteFournisseur}}</td>
+            <td>{{DomaineFournisseur}}</td>
+            <td>{{DateValidation}}</td>
+            <td>{{DateExpiration}}</td>
+        {% endfor %}
+    </tbody>
+</table>

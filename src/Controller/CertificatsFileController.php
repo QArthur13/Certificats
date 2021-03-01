@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Information;
 use App\Entity\CertificatsFile;
 use App\Form\CertificatsFileType;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +16,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CertificatsFileController extends AbstractController
 {
     /**
-     * @Route("/user/user", name="app_user_form")
+     * @Route("/user/list", name="app_user_list")
+     */
+    public function list()
+    {
+        $data = new Information();
+        $lists = array(
+            'ID' => $data->getId(), 'Societe' => $data->getSociety(), 'Domaine' => $data->getDomain(),
+             'SocieteFournisseur' => $data->getProviderSociety(), 'DomaineFournisseur' => $data->getProviderDomain(),
+              'DateValidation' => $data->getValideDate(), 'DateExpiration' => $data->getExpireDate()
+        );
+
+        return $this->render('user/list.html.twig', ['lists' => $lists]);
+    }
+
+    /**
+     * @Route("/user/form", name="app_user_form")
      */
     public function form(Request $request, SluggerInterface $slugger)
     {
@@ -28,6 +45,21 @@ class CertificatsFileController extends AbstractController
             /** @var UploadedFile $certificatsFile */
             $certificatsFile = $form->get('certificats')->getData();
             $data = openssl_x509_parse($certificatsFile->getContent());
+
+            $data = new Information();
+
+            $data
+                ->setSociety($$data->getSociety())
+                ->setDomain($data->getDomain())
+                ->setProviderSociety($data->getProviderSociety())
+                ->setProviderDomain($data->getProviderDomain())
+                ->setValideDate($data->getValideDate())
+                ->setExpireDate($data->getValideDate())
+            ;
+
+            $manager = new ObjectManager();
+            $manager->persist($data);
+            $manager->flush();
 
             return $this->redirectToRoute('app_user_list');
         }
