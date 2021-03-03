@@ -22,7 +22,7 @@ class CertificatsFileController extends AbstractController
     {
         $data = new Information();
         $lists = array(
-            'ID' => $data->getId(), 'Societe' => $data->getSociety(), 'Domaine' => $data->getDomain(),
+            'id' => $data->getId(), 'Societe' => $data->getSociety(), 'Domaine' => $data->getDomain(),
              'SocieteFournisseur' => $data->getProviderSociety(), 'DomaineFournisseur' => $data->getProviderDomain(),
               'DateValidation' => $data->getValideDate(), 'DateExpiration' => $data->getExpireDate()
         );

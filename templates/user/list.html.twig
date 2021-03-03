@@ -13,14 +13,17 @@
         </tr>
     </thead>
     <tbody>
-        {% for list in lists %}
-            <th class="thead-primary text-white">{{ID}}</th>
-            <td>{{Societe}}</td>
-            <td>{{Domaine}}</td>
-            <td>{{SocieteFournisseur}}</td>
-            <td>{{DomaineFournisseur}}</td>
-            <td>{{DateValidation}}</td>
-            <td>{{DateExpiration}}</td>
-        {% endfor %}
+        {% if lists %}
+            {% for list in lists %}
+                <th class="thead-primary text-white">{{list.id}}</th>
+                <td>{{Societe}}</td>
+                <td>{{Domaine}}</td>
+                <td>{{SocieteFournisseur}}</td>
+                <td>{{DomaineFournisseur}}</td>
+                <td>{{DateValidation}}</td>
+                <td>{{DateExpiration}}</td>
+            {% endfor %}
+        {% endif %}
+        
     </tbody>
 </table>

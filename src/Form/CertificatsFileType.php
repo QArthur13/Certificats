@@ -32,14 +32,14 @@ class CertificatsFileType extends AbstractType
 
                     new File([
 
-                        'mineTypes' => [
+                        'mimeTypes' => [
 
                             'application/x-x509-ca-cert',
                             'application/x-x509-ca-ra-cert',
                             'application/x-x509-next-ca-cert',
                         ],
 
-                        'mineTypesMessage' => 'Veuillez mettre un certificats valide, merci.',
+                        'mimeTypesMessage' => 'Veuillez mettre un certificats valide, merci.',
                     ])
                     ],
             ])
