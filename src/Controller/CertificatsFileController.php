@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Certificats;
 use App\Entity\Information;
-use App\Entity\CertificatsFile;
 use App\Form\CertificatsFileType;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +36,7 @@ class CertificatsFileController extends AbstractController
     public function form(Request $request, SluggerInterface $slugger)
     {
 
-        $certificats = new CertificatsFile();
+        $certificats = new Certificats();
         $form = $this->createForm(CertificatsFileType::class, $certificats);
         $form->handleRequest($request);
 

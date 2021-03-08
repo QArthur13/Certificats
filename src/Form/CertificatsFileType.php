@@ -2,12 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\CertificatsFile;
+use App\Entity\Certificats;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 /**
  * Cette classe envoie une extension de x509 pour pouvoir ensuite être envoyer dans le form.
@@ -49,7 +49,7 @@ class CertificatsFileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => CertificatsFile::class,
+            'data_class' => Certificats::class,
         ]);
     }
 }

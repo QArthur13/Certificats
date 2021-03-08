@@ -7,19 +7,19 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Permet de pouvoir utiliser le form du certificats.
  */
-class CertificatsFile
+class Certificats
 {
     /**
      * @ORM\Column(type="string")
      */
-    private $fileName;
+    private $certificatFile;
 
     /**
      * Get the value of fileName
      */ 
-    public function getFileName()
+    public function getCertificatFile()
     {
-        return $this->fileName;
+        return $this->certificatFile;
     }
 
     /**
@@ -27,9 +27,9 @@ class CertificatsFile
      *
      * @return  self
      */ 
-    public function setFileName($fileName)
+    public function setCertificatFile($certificatFile)
     {
-        $this->fileName = $fileName;
+        $this->certificatFile = $certificatFile;
 
         return $this;
     }
