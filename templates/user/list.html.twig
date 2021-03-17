@@ -1,7 +1,7 @@
 {% include "base.html.twig" %}
 
 <table class="table table-bordered">
-    <thead class="thead-primary text-white">
+    <thead class="thead-dark">
         <tr>
             <th>ID</th>
             <th>Société</th>
@@ -13,17 +13,18 @@
         </tr>
     </thead>
     <tbody>
-        {% if lists %}
-            {% for list in lists %}
-                <th class="thead-primary text-white">{{list.id}}</th>
-                <td>{{Societe}}</td>
-                <td>{{Domaine}}</td>
-                <td>{{SocieteFournisseur}}</td>
-                <td>{{DomaineFournisseur}}</td>
-                <td>{{DateValidation}}</td>
-                <td>{{DateExpiration}}</td>
-            {% endfor %}
-        {% endif %}
-        
+        <tr>
+            {% if lists %}
+                {% for list in lists %}
+                    <th class="bg-dark text-white">{{list.id}}</th>
+                    <td>{{list.society}}</td>
+                    <td>{{list.domain}}</td>
+                    <td>{{list.providerSociety}}</td>
+                    <td>{{list.providerDomain}}</td>
+                    <td>{{list.valideDate | date("d/m/Y H:i:s")}}</td>
+                    <td>{{list.expireDate | date("d/m/Y H:i:s")}}</td>
+                {% endfor %}
+            {% endif %}
+        </tr>
     </tbody>
 </table>

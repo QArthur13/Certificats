@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Certificats;
 use App\Entity\Information;
 use App\Form\CertificatsFileType;
+use App\Repository\InformationRepository;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,16 +19,9 @@ class CertificatsFileController extends AbstractController
     /**
      * @Route("/user/list", name="app_user_list")
      */
-    public function list()
+    public function list(InformationRepository $informationRepository)
     {
-        $data = new Information();
-        $lists = array(
-            'id' => $data->getId(), 'Societe' => $data->getSociety(), 'Domaine' => $data->getDomain(),
-             'SocieteFournisseur' => $data->getProviderSociety(), 'DomaineFournisseur' => $data->getProviderDomain(),
-              'DateValidation' => $data->getValideDate(), 'DateExpiration' => $data->getExpireDate()
-        );
-
-        return $this->render('user/list.html.twig', ['lists' => $lists]);
+        return $this->render('user/list.html.twig', ['lists' => $informationRepository->findAll()]);
     }
 
     /**

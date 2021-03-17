@@ -28,7 +28,7 @@ class CertificatsFileType extends AbstractType
                 'required' => true,
 
                 //Ici nous allons mettre nos contraintes.
-                'constraints' => [
+                /* 'constraints' => [
 
                     new File([
 
@@ -41,7 +41,7 @@ class CertificatsFileType extends AbstractType
 
                         'mimeTypesMessage' => 'Veuillez mettre un certificats valide, merci.',
                     ])
-                    ],
+                    ], */
             ])
         ;
     }
