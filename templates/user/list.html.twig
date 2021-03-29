@@ -14,17 +14,15 @@
     </thead>
     <tbody>
         <tr>
-            {% if lists %}
-                {% for list in lists %}
-                    <th class="bg-dark text-white">{{list.id}}</th>
-                    <td>{{list.society}}</td>
-                    <td>{{list.domain}}</td>
-                    <td>{{list.providerSociety}}</td>
-                    <td>{{list.providerDomain}}</td>
-                    <td>{{list.valideDate | date("d/m/Y H:i:s")}}</td>
-                    <td>{{list.expireDate | date("d/m/Y H:i:s")}}</td>
-                {% endfor %}
-            {% endif %}
+            {% for list in lists %}
+                <th class="bg-dark text-white">{{list.id}}</th>
+                <td>{{list.society}}</td>
+                <td>{{list.domain}}</td>
+                <td>{{list.providerSociety}}</td>
+                <td>{{list.providerDomain}}</td>
+                <td>{{list.valideDate | date("d/m/Y H:i:s", "Europe/Paris")}}</td>
+                <td>{{list.expireDate | date("d/m/Y H:i:s", "Europe/Paris")}}</td>
+            {% endfor %}
         </tr>
     </tbody>
 </table>
