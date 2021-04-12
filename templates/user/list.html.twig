@@ -13,8 +13,8 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            {% for list in lists %}
+        {% for list in lists %}
+            <tr>
                 <th class="bg-dark text-white">{{list.id}}</th>
                 <td>{{list.society}}</td>
                 <td>{{list.domain}}</td>
@@ -22,7 +22,7 @@
                 <td>{{list.providerDomain}}</td>
                 <td>{{list.valideDate | date("d/m/Y H:i:s", "Europe/Paris")}}</td>
                 <td>{{list.expireDate | date("d/m/Y H:i:s", "Europe/Paris")}}</td>
-            {% endfor %}
-        </tr>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>

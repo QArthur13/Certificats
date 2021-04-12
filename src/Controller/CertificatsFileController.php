@@ -83,8 +83,6 @@ class CertificatsFileController extends AbstractController
             $entityManager->persist($information);
             $entityManager->flush();
 
-            //dd(Self::conversionDate($data['validFrom']));
-
             return $this->redirectToRoute('app_user_list');
         }
 
