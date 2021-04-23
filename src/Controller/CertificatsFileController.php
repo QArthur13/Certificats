@@ -6,6 +6,7 @@ use App\Entity\Certificats;
 use App\Entity\Information;
 use App\Form\CertificatsFileType;
 use App\Repository\InformationRepository;
+use App\Service\Useful;
 use DateTime;
 use Doctrine\Persistence\ObjectManager;
 use phpDocumentor\Reflection\PseudoTypes\True_;
@@ -20,19 +21,13 @@ use Symfony\Component\Validator\Constraints\Date;
 
 class CertificatsFileController extends AbstractController
 {
-
     /**
-     * Permet de convertir la date qu'on récupère d'un certificats
+     * @Route ("/user/certificat/{id}", name="app_user_certificat")
+     * @param Information $information
      */
-    public static function conversionDate($date)
+    public function showCertificat(Information $information)
     {
-        //On récupère le timestamp du fichier.
-        $d = \DateTime::createFromFormat('ymdHisP', $date);
-        $dateGMT = new \DateTime();
-        $dateGMT->setTimestamp($d->getTimestamp());
-
-        //Puis on le formate à une date MySQL.
-        return $dateGMT->format('Y-m-d H:i:s');
+        Useful::debug($information);
     }
 
     /**
@@ -40,7 +35,35 @@ class CertificatsFileController extends AbstractController
      */
     public function list(InformationRepository $informationRepository)
     {
-        return $this->render('user/list.html.twig', ['lists' => $informationRepository->findAll()]);
+        $today = new DateTime();
+        $test = DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-10 15:04:03');
+        $test2 = $informationRepository->nearExpireV2($test);
+        $test3 = $test2;
+
+        Useful::debug($test3);
+
+        foreach ($test3 as $index => $tes){
+;
+            if ($test3[$index]['expiration'] = $tes['expiration'] == 5){
+
+                $this->addFlash('warning', 'Le certifcat N°'.$tes['id'].' va expirer dans '.$tes['expiration'].' jours!');
+            }
+
+            Useful::debug($tes);
+        }
+
+        /*if ($today < $test){
+
+            $this->addFlash('warning', 'Le certifcat va bientôt expirer');
+        }*/
+
+        return $this->render('user/list.html.twig', [
+            
+            'lists' => $informationRepository->findAll(),
+            'today' => $today,
+            'test2' => $test2,
+            'test3' => $test3
+            ]);
     }
 
     /**

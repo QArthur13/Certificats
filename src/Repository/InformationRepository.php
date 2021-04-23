@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Information;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +18,45 @@ class InformationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Information::class);
+    }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function expireDate()
+    {
+        return $this->createQueryBuilder('i')
+            ->select('i.expire_date')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param DateTime $dateTime
+     * @return int|mixed|string
+     */
+    public function nearExpireV2(DateTime $dateTime)
+    {
+        return $this->createQueryBuilder('i')
+            ->select('i.id, DATE_DIFF(i.expire_date, :date) as expiration')
+            ->setParameter('date', $dateTime)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function nearExpire()
+    {
+        return $this->createQueryBuilder('i')
+            //->select('d.expire_date')
+            ->select('DATE_DIFF(i.expire_date, :date)')
+            ->setParameter('date', DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-25 13:00:00'))
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     // /**

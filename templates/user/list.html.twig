@@ -1,28 +1,88 @@
-{% include "base.html.twig" %}
+{% extends "base.html.twig." %}
 
-<table class="table table-bordered">
-    <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Société</th>
-            <th>Domaine</th>
-            <th>Société Fournisseur</th>
-            <th>Domaine Fournisseur</th>
-            <th>Date de Validation</th>
-            <th>Date d'Expiration </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for list in lists %}
+{% block body %}
+    <table class="table table-bordered">
+        <thead class="thead-dark text-center">
             <tr>
-                <th class="bg-dark text-white">{{list.id}}</th>
-                <td>{{list.society}}</td>
-                <td>{{list.domain}}</td>
-                <td>{{list.providerSociety}}</td>
-                <td>{{list.providerDomain}}</td>
-                <td>{{list.valideDate | date("d/m/Y H:i:s", "Europe/Paris")}}</td>
-                <td>{{list.expireDate | date("d/m/Y H:i:s", "Europe/Paris")}}</td>
+                <th>ID</th>
+                <th>Société</th>
+                <th>Domaine</th>
+                <th>Société Fournisseur</th>
+                <th>Domaine Fournisseur</th>
+                <th>Date de Validation</th>
+                <th>Date d'Expiration </th>
+                <th>Status</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for list in lists %}
+                <tr>
+                    <th class="bg-dark text-white text-center">{{list.id}}</th>
+                    <td>{{list.society}}</td>
+                    <td>{{list.domain}}</td>
+                    <td>{{list.providerSociety}}</td>
+                    <td>{{list.providerDomain}}</td>
+                    <td>{{list.valideDate | date("d/m/Y H:i:s")}}</td>
+                    <td>{{list.expireDate | date("d/m/Y H:i:s")}}</td>
+                    {#{% if today > list.expireDate %}
+                        <td class="bg-danger text-center text-white"><em>Certiticat expirer<em></td>
+                    {% else %}
+                        <td class="bg-success text-center text-white"><em>Certiticat bon<em></td>
+                    {% endif %}#}
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+    <h1 class="text-center">Nous somme le: {{today | date("d/m/Y H:i:s", "Europe/Paris")}}</h1>
+
+    <br>
+
+    {% for message in app.flashes('warning') %}
+        <div class="flash-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {#{% for test in tests %}
+        {% if test.1 == 5 %}
+            <p class="bg-warning text-white">Orange</p>
+        {% else %}
+            <p class="bg-success text-white text-center">Vert</p>
+        {% endif %}
+    {% endfor %}#}
+
+    {% for tes in test2 %}
+        {{ tes.expiration }}
+    {% endfor %}
+
+    {# {% if test == true %}
+        <h5 class="text-center bg-warning text-white">Test</h5>
+    {% endif %} #}
+
+    {#{% for key, test in tests %}
+        {{key}} {{test.1}}
+        <br>
+        {% if test.1 <= 5  %}
+            <h5 class="text-center bg-warning text-white">Test</h5>
+        {% endif %}
+    {% endfor %}#}
+
+    {# {% for test in tests %}
+        {% if test == 5 %}
+            <h5 class="text-center bg-warning text-white">Test</h5>
+        {% endif %}
+    {% endfor %} #}
+
+    <br>
+
+    {#
+    {% for list in lists %}
+        {% if date(list.expireDate) < date() %}
+            <p>Test</p>
+        {% endif %}
+    {% endfor %}#}
+{% endblock %}
