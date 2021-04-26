@@ -21,24 +21,13 @@ class InformationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return int|mixed|string
-     */
-    public function expireDate()
-    {
-        return $this->createQueryBuilder('i')
-            ->select('i.expire_date')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
      * @param DateTime $dateTime
-     * @return int|mixed|string
+     * @return Information[]
      */
     public function nearExpireV2(DateTime $dateTime)
     {
         return $this->createQueryBuilder('i')
-            ->select('i.id, DATE_DIFF(i.expire_date, :date) as expiration')
+            ->select('i.id, i.society, i.domain, i.provider_society, i.provider_domain, i.valide_date, i.expire_date, DATE_DIFF(i.expire_date, :date) as expiration')
             ->setParameter('date', $dateTime)
             ->getQuery()
             ->getResult()

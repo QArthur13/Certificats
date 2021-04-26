@@ -15,74 +15,24 @@
             </tr>
         </thead>
         <tbody>
-            {% for list in lists %}
+            {% for exDate in expireDate %}
                 <tr>
-                    <th class="bg-dark text-white text-center">{{list.id}}</th>
-                    <td>{{list.society}}</td>
-                    <td>{{list.domain}}</td>
-                    <td>{{list.providerSociety}}</td>
-                    <td>{{list.providerDomain}}</td>
-                    <td>{{list.valideDate | date("d/m/Y H:i:s")}}</td>
-                    <td>{{list.expireDate | date("d/m/Y H:i:s")}}</td>
-                    {#{% if today > list.expireDate %}
-                        <td class="bg-danger text-center text-white"><em>Certiticat expirer<em></td>
+                    <th class="bg-dark text-white text-center">{{ exDate.id }}</th>
+                    <td>{{ exDate.society }}</td>
+                    <td>{{ exDate.domain }}</td>
+                    <td>{{ exDate.provider_society }}</td>
+                    <td>{{ exDate.provider_domain }}</td>
+                    <td>{{ exDate.valide_date | date("d/m/Y H:i:s") }}</td>
+                    <td>{{ exDate.expire_date | date("d/m/Y H:i:s") }}</td>
+                    {% if exDate.expiration > 5 %}
+                        <td class="bg-success"><em>Ce certificats est valide!</em></td>
+                    {% elseif exDate.expiration > 0 %}
+                        <td class="bg-warning"><em>Ce certificats va expirer dans {{ exDate.expiration }} jours!</em></td>
                     {% else %}
-                        <td class="bg-success text-center text-white"><em>Certiticat bon<em></td>
-                    {% endif %}#}
-
+                        <td class="bg-danger"><em>Ce certificats est expirer!</em></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-
-    <br>
-
-    <h1 class="text-center">Nous somme le: {{today | date("d/m/Y H:i:s", "Europe/Paris")}}</h1>
-
-    <br>
-
-    {% for message in app.flashes('warning') %}
-        <div class="flash-warning">
-            {{ message }}
-        </div>
-    {% endfor %}
-
-    {#{% for test in tests %}
-        {% if test.1 == 5 %}
-            <p class="bg-warning text-white">Orange</p>
-        {% else %}
-            <p class="bg-success text-white text-center">Vert</p>
-        {% endif %}
-    {% endfor %}#}
-
-    {% for tes in test2 %}
-        {{ tes.expiration }}
-    {% endfor %}
-
-    {# {% if test == true %}
-        <h5 class="text-center bg-warning text-white">Test</h5>
-    {% endif %} #}
-
-    {#{% for key, test in tests %}
-        {{key}} {{test.1}}
-        <br>
-        {% if test.1 <= 5  %}
-            <h5 class="text-center bg-warning text-white">Test</h5>
-        {% endif %}
-    {% endfor %}#}
-
-    {# {% for test in tests %}
-        {% if test == 5 %}
-            <h5 class="text-center bg-warning text-white">Test</h5>
-        {% endif %}
-    {% endfor %} #}
-
-    <br>
-
-    {#
-    {% for list in lists %}
-        {% if date(list.expireDate) < date() %}
-            <p>Test</p>
-        {% endif %}
-    {% endfor %}#}
 {% endblock %}

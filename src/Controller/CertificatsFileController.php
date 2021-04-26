@@ -22,47 +22,28 @@ use Symfony\Component\Validator\Constraints\Date;
 class CertificatsFileController extends AbstractController
 {
     /**
-     * @Route ("/user/certificat/{id}", name="app_user_certificat")
-     * @param Information $information
-     */
-    public function showCertificat(Information $information)
-    {
-        Useful::debug($information);
-    }
-
-    /**
      * @Route("/user/list", name="app_user_list")
      */
     public function list(InformationRepository $informationRepository)
     {
         $today = new DateTime();
         $test = DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-10 15:04:03');
-        $test2 = $informationRepository->nearExpireV2($test);
-        $test3 = $test2;
+        $expireDate = $informationRepository->nearExpireV2($test);
+        $expiration = $expireDate;
 
-        Useful::debug($test3);
+        foreach ($expiration as $index => $expire){
 
-        foreach ($test3 as $index => $tes){
-;
-            if ($test3[$index]['expiration'] = $tes['expiration'] == 5){
+            if ($expiration[$index]['expiration'] = $expire['expiration'] > 0 && $expiration[$index]['expiration'] = $expire['expiration'] < 6){
 
-                $this->addFlash('warning', 'Le certifcat N°'.$tes['id'].' va expirer dans '.$tes['expiration'].' jours!');
+                $this->addFlash('notice', 'Le certifcat N°'.$expire['id'].' va expirer dans '.$expire['expiration'].' jours!');
             }
-
-            Useful::debug($tes);
         }
-
-        /*if ($today < $test){
-
-            $this->addFlash('warning', 'Le certifcat va bientôt expirer');
-        }*/
 
         return $this->render('user/list.html.twig', [
             
             'lists' => $informationRepository->findAll(),
             'today' => $today,
-            'test2' => $test2,
-            'test3' => $test3
+            'expireDate' => $expireDate,
             ]);
     }
 
