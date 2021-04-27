@@ -1,12 +1,16 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <h1>Ajout un certiticats</h1>
+    {% if app.user %}
+        <h1>Ajout un certiticats</h1>
 
-    {{ form_start(form) }}
+        {{ form_start(form) }}
 
-        {{ form_row(form.certificats) }}
-        <button class="btn btn-primary">Envoie</button>
+            {{ form_row(form.certificats) }}
+            <button class="btn btn-primary">Envoie</button>
 
-    {{ form_end(form) }}
+        {{ form_end(form) }}
+    {% else %}
+        <h1 class="text-center">Vous devez vous connecter pour pouvoir ajouter un certificats</h1>
+    {% endif %}
 {% endblock %}

@@ -29,15 +29,34 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="{{ path('app_user_form') }}">Ajout</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="{{ path('app_user_list') }}">List</a>
                     </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path('user_create') }}">Creation</a>
+                    </li>
+                    {% if app.user %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('app_logout') }}">{{ app.user.email }} Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>
         {% for message in app.flashes('notice') %}
             <div class="flash-notice">
                 <div class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="flash-success">
+                <div class="alert alert-success" role="alert">
                     {{ message }}
                 </div>
             </div>

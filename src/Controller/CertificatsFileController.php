@@ -23,12 +23,18 @@ class CertificatsFileController extends AbstractController
 {
     /**
      * @Route("/user/list", name="app_user_list")
+     *
+     * @param InformationRepository $informationRepository
+     * Ceci nous permet de voir la liste de tout les certificats
+     * @return Response
+     * @throws \Exception
      */
     public function list(InformationRepository $informationRepository)
     {
-        $today = new DateTime();
+        $today = new DateTime('now', new \DateTimeZone('Europe/Paris'));
+        //($today);
         $test = DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-10 15:04:03');
-        $expireDate = $informationRepository->nearExpireV2($test);
+        $expireDate = $informationRepository->nearExpireV2($today);
         $expiration = $expireDate;
 
         foreach ($expiration as $index => $expire){
@@ -49,6 +55,10 @@ class CertificatsFileController extends AbstractController
 
     /**
      * @Route("/user/form", name="app_user_form")
+     * @param Request $request
+     * @param SluggerInterface $slugger
+     * Permet d'ajouter un certificats
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function form(Request $request, SluggerInterface $slugger)
     {
@@ -71,7 +81,7 @@ class CertificatsFileController extends AbstractController
 
             $valideExpire = DateTime::createFromFormat('ymdHisP', $data['validTo']);
             $expireGMT = new DateTime();
-            $expireGMT->setTimestamp($expireGMT->getTimestamp());
+            $expireGMT->setTimestamp($valideExpire->getTimestamp());
             $expireGMT->format('Y-m-d H:i:s');
 
             $information
@@ -81,11 +91,14 @@ class CertificatsFileController extends AbstractController
                 ->setProviderDomain($data['issuer']['CN'])
                 ->setValideDate($valideGMT)
                 ->setExpireDate($expireGMT)
+                ->setUser($this->getUser())
             ;
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($information);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Et Hop! Un certificats ajouter! ^^');
 
             return $this->redirectToRoute('app_user_list');
         }

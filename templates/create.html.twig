@@ -1,0 +1,9 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% if app.user %}
+        <h1 class="text-center">Vous avez déjà un compte!</h1>
+    {% else %}
+        {{ form(userForm) }}
+    {% endif %}
+{% endblock %}

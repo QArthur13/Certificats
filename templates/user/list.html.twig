@@ -1,5 +1,7 @@
 {% extends "base.html.twig." %}
 
+{#Mot de passe pour Dupont Marcel : Fr13!#}
+
 {% block body %}
     <table class="table table-bordered">
         <thead class="thead-dark text-center">
@@ -35,4 +37,8 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <br>
+
+    <h1 class="text-center">{{ today|date("d/m/Y H:i:s", "Europe/Paris") }}</h1>
 {% endblock %}

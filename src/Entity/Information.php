@@ -47,6 +47,12 @@ class Information
      */
     private $expire_date;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="information")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +126,18 @@ class Information
     public function setExpireDate(\DateTimeInterface $expire_date): self
     {
         $this->expire_date = $expire_date;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
