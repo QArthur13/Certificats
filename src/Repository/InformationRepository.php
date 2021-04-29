@@ -22,9 +22,47 @@ class InformationRepository extends ServiceEntityRepository
 
     /**
      * @param DateTime $dateTime
+     * Permet de récupérer tout les certificats qui sont expirés
      * @return Information[]
      */
-    public function nearExpireV2(DateTime $dateTime)
+    public function expire(DateTime $dateTime)
+    {
+        return $this->createQueryBuilder('i')
+            ->select('i.id, i.society, i.domain, i.provider_society, i.provider_domain, i.valide_date, 
+            i.expire_date, DATE_DIFF(i.expire_date, :date) as expiration')
+            ->setParameter('date', $dateTime)
+            ->andWhere('DATE_DIFF(i.expire_date, :date) <= 0')
+            ->setParameter('date', $dateTime)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @param DateTime $dateTime
+     * Permet de récupérer les derniers jours avant l'expiration du certificats
+     * @return Information[]
+     */
+    public function fiveDaysExpire(DateTime $dateTime)
+    {
+        return $this->createQueryBuilder('i')
+            ->select('i.id, i.society, i.domain, i.provider_society, i.provider_domain, i.valide_date, 
+            i.expire_date, DATE_DIFF(i.expire_date, :date) as expiration')
+            ->setParameter('date', $dateTime)
+            ->andWhere('DATE_DIFF(i.expire_date, :date) > 0')
+            ->setParameter('date', $dateTime)
+            ->andWhere('DATE_DIFF(i.expire_date, :date) <= 5')
+            ->setParameter('date', $dateTime)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @param DateTime $dateTime
+     * @return Information[]
+     */
+    public function nearExpire(DateTime $dateTime)
     {
         return $this->createQueryBuilder('i')
             ->select('i.id, i.society, i.domain, i.provider_society, i.provider_domain, i.valide_date, i.expire_date, DATE_DIFF(i.expire_date, :date) as expiration')
@@ -32,20 +70,6 @@ class InformationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
             ;
-    }
-
-    /**
-     * @return int|mixed|string
-     */
-    public function nearExpire()
-    {
-        return $this->createQueryBuilder('i')
-            //->select('d.expire_date')
-            ->select('DATE_DIFF(i.expire_date, :date)')
-            ->setParameter('date', DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-25 13:00:00'))
-            ->getQuery()
-            ->getResult()
-        ;
     }
 
     // /**

@@ -33,8 +33,8 @@ class CertificatsFileController extends AbstractController
     {
         $today = new DateTime('now', new \DateTimeZone('Europe/Paris'));
         //($today);
-        $test = DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-10 15:04:03');
-        $expireDate = $informationRepository->nearExpireV2($today);
+        $test = DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-20 15:04:03');
+        $expireDate = $informationRepository->nearExpire($test);
         $expiration = $expireDate;
 
         foreach ($expiration as $index => $expire){
