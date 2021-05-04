@@ -11,8 +11,12 @@ use DateTime;
 use Doctrine\Persistence\ObjectManager;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 use phpDocumentor\Reflection\Types\Self_;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -29,40 +33,60 @@ class CertificatsFileController extends AbstractController
      * @return Response
      * @throws \Exception
      */
-    public function list(InformationRepository $informationRepository)
+    public function list(InformationRepository $informationRepository, Request $request)
     {
         $today = new DateTime('now', new \DateTimeZone('Europe/Paris'));
-        //($today);
-        $test = DateTime::createFromFormat('Y-m-d H:i:s', '2021-03-20 15:04:03');
-        $expireDate = $informationRepository->nearExpire($test);
-        $expiration = $expireDate;
+        $expireDate = $informationRepository->nearExpire($today);
+        $test = $informationRepository->fiveDaysExpire($today);
+        dd($test);
+        $searchForm = $this->createFormBuilder(null)
+            ->add('query', TextType::class, [
 
-        foreach ($expiration as $index => $expire){
+                'label' => 'Rechercher un nom d\'une société:'
+            ])
+            ->add('submit', SubmitType::class, [
 
-            if ($expiration[$index]['expiration'] = $expire['expiration'] > 0 && $expiration[$index]['expiration'] = $expire['expiration'] < 6){
+                'label' => 'Rechercher',
+                'attr' => [
+                    'class' => 'btn btn-primary'
+                ]
+            ])
+            ->getForm()
+        ;
+        $searchForm->handleRequest($request);
+
+        foreach ($expireDate as $index => $expire){
+
+            if ($expire['expiration'] > 0 && $expire['expiration'] < 6){
 
                 $this->addFlash('notice', 'Le certifcat N°'.$expire['id'].' va expirer dans '.$expire['expiration'].' jours!');
             }
         }
 
-        return $this->render('user/list.html.twig', [
-            
-            'lists' => $informationRepository->findAll(),
-            'today' => $today,
-            'expireDate' => $expireDate,
+        if ($searchForm->isSubmitted() && $searchForm->isValid()){
+
+            $data = $searchForm->getData();
+
+            return $this->render('user/search.html.twig', [
+
+                'search' => $informationRepository->searchSociety($today, $data['query']),
             ]);
+        }
+
+        return $this->render('user/list.html.twig', [
+            'searchForm' => $searchForm->createView(),
+            'expireDate' => $expireDate,
+        ]);
     }
 
     /**
      * @Route("/user/form", name="app_user_form")
      * @param Request $request
-     * @param SluggerInterface $slugger
      * Permet d'ajouter un certificats
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function form(Request $request, SluggerInterface $slugger)
+    public function form(Request $request)
     {
-
         $certificats = new Certificats();
         $form = $this->createForm(CertificatsFileType::class, $certificats);
         $form->handleRequest($request);
@@ -84,15 +108,30 @@ class CertificatsFileController extends AbstractController
             $expireGMT->setTimestamp($valideExpire->getTimestamp());
             $expireGMT->format('Y-m-d H:i:s');
 
-            $information
-                ->setSociety($data['subject']['O'])
-                ->setDomain($data['subject']['CN'])
-                ->setProviderSociety($data['issuer']['O'])
-                ->setProviderDomain($data['issuer']['CN'])
-                ->setValideDate($valideGMT)
-                ->setExpireDate($expireGMT)
-                ->setUser($this->getUser())
-            ;
+            if (empty($data['subject']['O'])){
+
+                $information
+                    ->setSociety(str_replace("/CN=*.", '', $data['name']))
+                    ->setDomain($data['subject']['CN'])
+                    ->setProviderSociety($data['issuer']['O'])
+                    ->setProviderDomain($data['issuer']['CN'])
+                    ->setValideDate($valideGMT)
+                    ->setExpireDate($expireGMT)
+                    ->setUser($this->getUser())
+                ;
+            }
+            else{
+
+                $information
+                    ->setSociety($data['subject']['O'])
+                    ->setDomain($data['subject']['CN'])
+                    ->setProviderSociety($data['issuer']['O'])
+                    ->setProviderDomain($data['issuer']['CN'])
+                    ->setValideDate($valideGMT)
+                    ->setExpireDate($expireGMT)
+                    ->setUser($this->getUser())
+                ;
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($information);
@@ -108,3 +147,16 @@ class CertificatsFileController extends AbstractController
         ]);
     }
 }
+
+/*
+ * $email
+                ->from('qarthur@youpi.fr')
+                ->to($information->getUser()->getEmail())
+                ->subject('Confirmation du certificats')
+                ->text('Bonjour '.$information->getUser()->getLastname().' '.$information->getUser()->getFirstname().',
+                Votre certificats à bien été confirmé!
+                Cordialement.')
+            ;
+
+            $mailer->send($email);
+ */

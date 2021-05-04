@@ -22,6 +22,25 @@ class InformationRepository extends ServiceEntityRepository
 
     /**
      * @param DateTime $dateTime
+     * @param string $search
+     * Permet de chercher des sociéter
+     * @return Information[]
+     */
+    public function searchSociety(DateTime $dateTime, string $search)
+    {
+        return $this->createQueryBuilder('i')
+            ->select('i.id, i.society, i.domain, i.provider_society, i.provider_domain, i.valide_date,
+            i.expire_date, DATE_DIFF(i.expire_date, :date) as expiration')
+            ->setParameter('date', $dateTime)
+            ->andWhere('i.society LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @param DateTime $dateTime
      * Permet de récupérer tout les certificats qui sont expirés
      * @return Information[]
      */
@@ -29,9 +48,10 @@ class InformationRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->select('i.id, i.society, i.domain, i.provider_society, i.provider_domain, i.valide_date, 
-            i.expire_date, DATE_DIFF(i.expire_date, :date) as expiration')
+            i.expire_date, u.email, u.lastname, u.firstname, DATE_DIFF(i.expire_date, :date) as expiration')
             ->setParameter('date', $dateTime)
-            ->andWhere('DATE_DIFF(i.expire_date, :date) <= 0')
+            ->innerJoin('i.user', 'u', 'WITH', 'i.user = u.id')
+            ->where('DATE_DIFF(i.expire_date, :date) <= 0')
             ->setParameter('date', $dateTime)
             ->getQuery()
             ->getResult()
@@ -47,7 +67,8 @@ class InformationRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->select('i.id, i.society, i.domain, i.provider_society, i.provider_domain, i.valide_date, 
-            i.expire_date, DATE_DIFF(i.expire_date, :date) as expiration')
+            i.expire_date, u.email, u.lastname, u.firstname, DATE_DIFF(i.expire_date, :date) as expiration')
+            ->innerJoin('i.user', 'u', 'WITH', 'i.user = u.id')
             ->setParameter('date', $dateTime)
             ->andWhere('DATE_DIFF(i.expire_date, :date) > 0')
             ->setParameter('date', $dateTime)

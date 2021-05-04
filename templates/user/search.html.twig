@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+        <table class="table table-bordered">
+            <thead class="thead-dark text-center">
+            <tr>
+                <th>ID</th>
+                <th>Société</th>
+                <th>Domaine</th>
+                <th>Société Fournisseur</th>
+                <th>Domaine Fournisseur</th>
+                <th>Date de Validation</th>
+                <th>Date d'Expiration </th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if search is empty %}
+                <tr>
+                    <td colspan="8" class="text-center">Aucun résultat</td>
+                </tr>
+            {% else %}
+                {% for result in search %}
+                    <tr>
+                        <th class="bg-dark text-white text-center">{{ result.id }}</th>
+                        <td>{{ result.society }}</td>
+                        <td>{{ result.domain }}</td>
+                        <td>{{ result.provider_society }}</td>
+                        <td>{{ result.provider_domain }}</td>
+                        <td>{{ result.valide_date | date("d/m/Y H:i:s") }}</td>
+                        <td>{{ result.expire_date | date("d/m/Y H:i:s") }}</td>
+                    {% if result.expiration > 5 %}
+                        <td class="bg-success"><em>Ce certificats est valide!</em></td>
+                    {% elseif result.expiration > 0 %}
+                        <td class="bg-warning"><em>Ce certificats va expirer dans {{ result.expiration }} jours!</em></td>
+                    {% else %}
+                        <td class="bg-danger"><em>Ce certificats est expirer!</em></td>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    <a href="{{ path('app_user_list') }}">Retour à la liste</a>
+{% endblock %}

@@ -3,6 +3,8 @@
 namespace App\Command;
 
 use App\Repository\InformationRepository;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,10 +14,12 @@ class MailExpireCommand extends Command
 {
     protected static $defaultName = 'app:mail-expire';
     private $informationRepository;
+    private $mailer;
 
-    public function __construct(InformationRepository $informationRepository)
+    public function __construct(InformationRepository $informationRepository, MailerInterface $mailer)
     {
         $this->informationRepository = $informationRepository;
+        $this->mailer = $mailer;
 
         parent::__construct();
     }
@@ -34,13 +38,25 @@ class MailExpireCommand extends Command
         $fiveDaysDate = $this->informationRepository->fiveDaysExpire($today);
         $expireDate = $this->informationRepository->expire($today);
 
+        $email = (new Email());
+
         if ($fiveDaysDate) {
 
             foreach ($fiveDaysDate as &$fiveDate) {
 
                 if ($fiveDate['expiration'] == 5){
 
-                    $output->writeln('Il vous reste ' . $fiveDate['expiration'] . ' jours!');
+                    $output->writeln('Il reste ' . $fiveDate['expiration'] . ' jours avant l\'expiration!');
+
+                    $email
+                        ->from('qarthur@youpi.fr')
+                        ->to($fiveDate['email'])
+                        ->subject('Certificats expirer')
+                        ->text('Bonjour '.$fiveDate['lastname'].' '.$fiveDate['firstname']. ' un de vos certificats va bientôt expirer!')
+                    ;
+
+                    $this->mailer->send($email);
+
                 }
                 //$output->writeln('Ce certificats N°'.$test['id'].' est expirer!');
             }
@@ -54,6 +70,15 @@ class MailExpireCommand extends Command
                 if ($expire['expiration'] == 0){
 
                     $output->writeln('Certificats expirer!');
+
+                    $email
+                        ->from('qarthur@youpi.fr')
+                        ->to($expire['email'])
+                        ->subject('Certificats expirer')
+                        ->text('Bonjour '.$expire['lastname'].' '.$expire['firstname']. ' un de vos certificats est expirer!')
+                    ;
+
+                    $this->mailer->send($email);
                 }
             }
         }
